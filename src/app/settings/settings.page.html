@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Paramètres</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-list-header color="primary">
+      <ion-label>Paramètres généraux</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label position="stacked">Adresse publique</ion-label>
+      <ion-input placeholder="Module WiFi (URL ou IP)"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header color="primary">
+      <ion-label>Liste des télérupteurs</ion-label>
+    </ion-list-header>
+
+    <ion-item detail="true" 
+      *ngFor="let item of getTelerupteurs()"
+      (click)="presentPopover($event, item)">{{item.name}}</ion-item>
+          
+  </ion-list>  
+  
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
+
+<ion-footer *ngIf="changed">
+  <ion-toolbar>
+      <ion-button color="success" expand="full">Enregistrer</ion-button>
+  </ion-toolbar>
+</ion-footer>

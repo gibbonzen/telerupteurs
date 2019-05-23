@@ -1,5 +1,7 @@
 {
   "name": "telerupteurs",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
