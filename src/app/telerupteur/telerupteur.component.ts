@@ -27,7 +27,7 @@ export class TelerupteurComponent implements OnInit {
   }
 
   save() {
-    console.log(this.model)
     this.teleService.updateTelerupteur(this.model)
   }
+
 }

@@ -17,7 +17,7 @@
     </ion-list-header>
 
     <ion-item *ngFor="let item of getTelerupteurs()">
-      <ion-label>{{item.name}}</ion-label>
+      <ion-label>{{item.name}} ({{isOn(item) ? "allumé" : "éteint"}})</ion-label>
       <ion-toggle color="primary" [checked]="item.enabled" [(ngModel)]="item.enabled" (click)="enable(item)"></ion-toggle>
     </ion-item>
 

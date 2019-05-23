@@ -11,9 +11,7 @@ export class HomePage implements OnInit {
 
   constructor(private teleService: TelerupteurService) { }
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() { }
 
   getTelerupteurs() {
     return this.teleService.getTelerupteurs()
@@ -21,5 +19,9 @@ export class HomePage implements OnInit {
 
   enable(telerupteur: Telerupteur) {
     this.teleService.enable(telerupteur)
+  }
+
+  isOn(telerupteur: Telerupteur): boolean {
+    return telerupteur.enabled
   }
 }

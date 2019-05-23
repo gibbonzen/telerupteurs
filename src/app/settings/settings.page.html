@@ -34,14 +34,8 @@
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
-      <ion-icon name="add"></ion-icon>
+      <ion-icon name="add" (click)="presentPopover($event, createNew())"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
 </ion-content>
-
-<ion-footer *ngIf="changed">
-  <ion-toolbar>
-      <ion-button color="success" expand="full">Enregistrer</ion-button>
-  </ion-toolbar>
-</ion-footer>

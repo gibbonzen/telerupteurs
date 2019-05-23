@@ -35,4 +35,13 @@ export class SettingsPage implements OnInit {
     return this.telerupteurService.getTelerupteurs()
   }
 
+  createNew() {
+    return {
+      id: this.telerupteurService.count(),
+      name: "Nouveau télérupteur",
+      route: "/nouveau-telerupteur",
+      enabled: false
+    }
+  }
+
 }
