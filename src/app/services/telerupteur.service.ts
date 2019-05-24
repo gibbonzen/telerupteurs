@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Telerupteur } from '../model/telerupteur.model';
 import { HttpClient } from '@angular/common/http';
-import { addToViewTree } from '@angular/core/src/render3/instructions';
 import { SocketService, SocketEvent } from './socket.service';
 
 @Injectable({
@@ -17,12 +16,10 @@ export class TelerupteurService {
 
   private loadTelerupteurs() {
     this.http.get<Telerupteur[]>(this.baseUrl).subscribe((data: Telerupteur[]) => this.telerupteurs = data)
-
-    let event: SocketEvent = {
+    this.socketService.connect(this.baseUrl, {
       name: 'change',
-      next: console.log
-    }
-    this.socketService.connect(this.baseUrl, event)
+      next: (o, n) => this.onChange(o, n)
+    })
   }
 
   getTelerupteurs(): Telerupteur[] {
@@ -45,11 +42,25 @@ export class TelerupteurService {
       this.http.put(`${this.baseUrl}/${telerupteur.id}`, telerupteur).subscribe()
   }
 
-  private exists(telerupteur: Telerupteur): boolean {
-    return this.telerupteurs.every(t => t.id === telerupteur.id)
+  exists(telerupteur: Telerupteur): boolean {
+    return this.telerupteurs.some(t => t.id === telerupteur.id)
+  }
+
+  getTelerupteur(id) {
+    return this.telerupteurs.find(t => t.id === Number(id))
   }
 
   addTelerupteur(telerupteur: Telerupteur) {
-    this.http.post(`${this.baseUrl}`, telerupteur).subscribe((data: Telerupteur) => this.telerupteurs.push(data))
+    this.http.post(this.baseUrl, telerupteur).subscribe((data: Telerupteur) => this.telerupteurs.push(data))
+  }
+
+  removeTelerupteur(telerupteur: Telerupteur) {
+    this.http.delete(`${this.baseUrl}/${telerupteur.id}`).subscribe((data: Telerupteur[]) => this.telerupteurs = data)
+  }
+
+  private onChange(oldObj: Telerupteur, newObj: Telerupteur) {
+    //console.log(`Le télérupteur ${newObj.name} a été ${newObj.enabled === true ? "activé" : "désactivé"}`)
+    let index = this.telerupteurs.indexOf(this.telerupteurs.find(t => t.id === oldObj.id))
+    this.telerupteurs[index].enabled = newObj.enabled
   }
 }

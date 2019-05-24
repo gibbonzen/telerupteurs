@@ -27,14 +27,15 @@
 
     <ion-item detail="true" 
       *ngFor="let item of getTelerupteurs()"
-      (click)="presentPopover($event, item)">{{item.name}}</ion-item>
+      (click)="push(item)">{{item.name}}</ion-item>
           
   </ion-list>  
   
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
-      <ion-icon name="add" (click)="presentPopover($event, createNew())"></ion-icon>
+      <!--<ion-icon name="add" (click)="presentModal(createNew())"></ion-icon>-->
+      <ion-icon name="add" (click)="push(createNew())"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 

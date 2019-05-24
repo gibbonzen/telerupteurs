@@ -1,25 +1,38 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Telerupteur } from '../model/telerupteur.model';
+import { AlertController, NavController } from '@ionic/angular';
 import { TelerupteurService } from '../services/telerupteur.service';
-import { NavParams, NavController, AlertController } from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-telerupteur',
-  templateUrl: './telerupteur.component.html',
-  styleUrls: ['./telerupteur.component.scss'],
+  selector: 'app-telerupteurs',
+  templateUrl: './telerupteurs.page.html',
+  styleUrls: ['./telerupteurs.page.scss'],
 })
-export class TelerupteurComponent implements OnInit {
+export class TelerupteursPage implements OnInit {
 
   @Input() model: Telerupteur
   private changed: boolean = false
 
-  constructor(private navParams: NavParams,
+  constructor(private route: ActivatedRoute,
+    private navCtrl: NavController,
     public alertController: AlertController,
     private teleService: TelerupteurService) { }
 
   ngOnInit() {
-    let modal = this.navParams.get('modal')
-    this.back = modal.dismiss
+    this.route.queryParams.subscribe(data => {
+      this.model = this.teleService.getTelerupteur(data.id)
+      if(this.model === undefined) this.model = this.createNew()
+    })
+  }
+
+  createNew() {
+    return {
+      id: this.teleService.count(),
+      name: "Nouveau télérupteur",
+      route: "/nouveau-telerupteur",
+      enabled: false
+    }
   }
 
   update() {
@@ -36,7 +49,7 @@ export class TelerupteurComponent implements OnInit {
   }
 
   back() {
-    this.back()
+    this.navCtrl.pop()
   }
 
   async presentAlertConfirm() {

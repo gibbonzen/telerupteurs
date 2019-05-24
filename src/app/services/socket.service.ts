@@ -7,16 +7,37 @@ export interface SocketEvent {
   next: Function
 }
 
+interface Socket {
+  route: string,
+  socket: any
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SocketService {
 
+  private sockets: Socket[] = []
+
   constructor() { }
 
-  connect(url: string, event: SocketEvent) {
-    let socket = io.connect(url)
+  connect(route: string, event: SocketEvent) {
+    //console.log('Connection to ', route)
 
-    socket.on(event.name, (o, n) => event.next(o, n))
+    if(!this.sockets.some(s => s.route === route)) {
+      let socket = io.connect(route)
+
+      socket.on(event.name, (o, n) => event.next(o, n))
+
+      this.sockets.push({
+        route: route,
+        socket: socket
+      })
+    }
   }
+  
+  disconnect(route: string) {
+    this.sockets.splice(this.sockets.indexOf(this.sockets.find(s => s.route === route)), 1)
+  }
+
 }

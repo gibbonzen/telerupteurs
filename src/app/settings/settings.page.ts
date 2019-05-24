@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, NavController, ModalController } from '@ionic/angular';
 import { TelerupteurComponent } from '../telerupteur/telerupteur.component';
 import { Telerupteur } from '../model/telerupteur.model';
 import { TelerupteurService } from '../services/telerupteur.service';
@@ -16,6 +16,7 @@ export class SettingsPage implements OnInit {
 
   constructor(private router: Router,
     public popoverController: PopoverController,
+    public modalController: ModalController,
     private telerupteurService: TelerupteurService) { }
 
   ngOnInit() {
@@ -29,6 +30,18 @@ export class SettingsPage implements OnInit {
       translucent: true
     });
     return await popover.present();
+  }
+
+  async presentModal(model: Telerupteur) {
+    const modal = await this.modalController.create({
+      component: TelerupteurComponent,
+      componentProps: {model: model, back: this.modalController.dismiss}
+    })
+    return await modal.present()
+  }
+
+  push(telerupteur: Telerupteur) {
+    this.router.navigate(['/telerupteurs'], { queryParams: { id: telerupteur.id }})
   }
 
   getTelerupteurs(): Telerupteur[] {
