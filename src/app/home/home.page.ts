@@ -13,6 +13,10 @@ export class HomePage implements OnInit {
 
   ngOnInit() { }
 
+  display() {
+    return this.teleService.count() > 0
+  }
+
   getTelerupteurs() {
     return this.teleService.getTelerupteurs()
   }

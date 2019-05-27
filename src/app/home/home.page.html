@@ -11,16 +11,19 @@
 
 <ion-content>
 
-  <ion-list>
+  <ion-list *ngIf="display()">
     <ion-list-header color="primary">
       <ion-label>État des télérupteurs</ion-label>
     </ion-list-header>
 
     <ion-item *ngFor="let item of getTelerupteurs()">
       <ion-label>{{item.name}} ({{isOn(item) ? "allumé" : "éteint"}})</ion-label>
-      <ion-toggle color="primary" [checked]="item.enabled" [(ngModel)]="item.enabled" (click)="enable(item)"></ion-toggle>
+      <ion-toggle color="success" [checked]="item.enabled" [(ngModel)]="item.enabled" (click)="enable(item)"></ion-toggle>
     </ion-item>
-
   </ion-list>
+
+  <ion-item *ngIf="!display()">
+    Aucun télérupteur n'est paramétré ou le module Wifi est indisponible...
+  </ion-item>
 
 </ion-content>

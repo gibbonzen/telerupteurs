@@ -16,8 +16,10 @@
 
     <ion-item>
       <ion-label position="stacked">Adresse publique</ion-label>
-      <ion-input placeholder="Module WiFi (URL ou IP)"></ion-input>
+      <ion-input #url placeholder="Module WiFi (URL ou IP)" (change)="change()" [(ngModel)]="baseURL"></ion-input>
     </ion-item>
+
+    <ion-button (click)="save(url)" expand="full" color="success" *ngIf="isChanged()">Enregistrer</ion-button>
   </ion-list>
 
   <ion-list>
@@ -33,8 +35,7 @@
   
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button>
-      <!--<ion-icon name="add" (click)="presentModal(createNew())"></ion-icon>-->
+    <ion-fab-button color="success">
       <ion-icon name="add" (click)="push(createNew())"></ion-icon>
     </ion-fab-button>
   </ion-fab>

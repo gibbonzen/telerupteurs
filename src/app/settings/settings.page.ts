@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController, NavController, ModalController } from '@ionic/angular';
-import { TelerupteurComponent } from '../telerupteur/telerupteur.component';
 import { Telerupteur } from '../model/telerupteur.model';
 import { TelerupteurService } from '../services/telerupteur.service';
 
@@ -13,6 +12,7 @@ import { TelerupteurService } from '../services/telerupteur.service';
 export class SettingsPage implements OnInit {
 
   private changed: boolean = false
+  private baseURL: string
 
   constructor(private router: Router,
     public popoverController: PopoverController,
@@ -20,24 +20,20 @@ export class SettingsPage implements OnInit {
     private telerupteurService: TelerupteurService) { }
 
   ngOnInit() {
+    this.baseURL = this.telerupteurService.getBaseUrl()
   }
 
-  async presentPopover(ev: any, model: Telerupteur) {
-    const popover = await this.popoverController.create({
-      component: TelerupteurComponent,
-      componentProps: [model],
-      event: ev,
-      translucent: true
-    });
-    return await popover.present();
+  change() {
+    this.changed = true
   }
 
-  async presentModal(model: Telerupteur) {
-    const modal = await this.modalController.create({
-      component: TelerupteurComponent,
-      componentProps: {model: model, back: this.modalController.dismiss}
-    })
-    return await modal.present()
+  isChanged(): boolean {
+    return this.changed
+  }
+
+  save(url: HTMLIonInputElement): void {
+    this.changed = false
+    this.telerupteurService.setUrl(url.value)
   }
 
   push(telerupteur: Telerupteur) {

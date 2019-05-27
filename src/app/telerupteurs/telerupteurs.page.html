@@ -5,7 +5,7 @@
     </ion-button>
   </ion-buttons>
   
-  <ion-title>Télérupteur</ion-title>
+  <ion-title color="primary">Télérupteur</ion-title>
 
   <ion-buttons slot="end">
       <ion-button fill="clear" color="danger" (click)="presentAlertConfirm()" *ngIf="isNew()">
@@ -33,7 +33,7 @@
           <ion-input placeholder="{{model.route}}" [(ngModel)]="model.route" (change)="update()"></ion-input>
       </ion-item>
     
-      <ion-button expand="block" [disabled]="!isChanged()" (click)="save()">Enregistrer</ion-button>
+      <ion-button expand="full" color="success" [disabled]="!isChanged()" (click)="save()">Enregistrer</ion-button>
     
   </ion-list>
     

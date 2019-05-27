@@ -2,19 +2,40 @@ import { Injectable } from '@angular/core';
 import { Telerupteur } from '../model/telerupteur.model';
 import { HttpClient } from '@angular/common/http';
 import { SocketService, SocketEvent } from './socket.service';
+import { StorageService } from './storage.service';
+import { NetworkService } from './network.service';
+import { TelerupteursPage } from '../telerupteurs/telerupteurs.page';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TelerupteurService {
 
-  private baseUrl: string = 'http://localhost:8081/telerupteurs'
+  private static BASE_URL: string = "base-url"
+  private baseUrl: string = this.getBaseUrl()
   private telerupteurs: Telerupteur[]
 
   constructor(private http: HttpClient,
-    private socketService: SocketService) { }
+    private socketService: SocketService,
+    private storageService: StorageService,
+    private networkService: NetworkService) { 
+      this.loadTelerupteurs()
+    }
+
+  async setUrl(url: string) {
+    if(await this.networkService.ping(url)) {
+      this.storageService.setItem(TelerupteurService.BASE_URL, url)
+      this.baseUrl = this.getBaseUrl()
+    }
+  }
+
+  getBaseUrl() {
+    return this.storageService.getItem<string>(TelerupteurService.BASE_URL)
+  }
 
   private loadTelerupteurs() {
+    if(!this.baseUrl || this.baseUrl === null) return
+
     this.http.get<Telerupteur[]>(this.baseUrl).subscribe((data: Telerupteur[]) => this.telerupteurs = data)
     this.socketService.connect(this.baseUrl, {
       name: 'change',
@@ -28,8 +49,8 @@ export class TelerupteurService {
   }
 
   count(): number {
-    let lastID = this.telerupteurs[this.telerupteurs.length -1].id
-    return ++lastID
+    if(this.telerupteurs === undefined || this.telerupteurs === null) return 0
+    return this.telerupteurs[this.telerupteurs.length -1].id +1
   }
 
   enable(telerupteur: Telerupteur) {
