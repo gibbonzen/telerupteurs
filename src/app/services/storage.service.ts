@@ -7,7 +7,7 @@ export class StorageService {
 
   constructor() { }
 
-  setItem(key: string, item: any) {
+  setItem<T>(key: string, item: T) {
     localStorage.setItem(key, JSON.stringify(item))
   }
 

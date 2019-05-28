@@ -2,7 +2,9 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController, NavController, ModalController } from '@ionic/angular';
 import { Telerupteur } from '../model/telerupteur.model';
-import { TelerupteurService } from '../services/telerupteur.service';
+import { TelerupteursService } from '../services/http/telerupteurs.service';
+import { PreferencesService } from '../services/preferences.service';
+import { Config } from '../app.config';
 
 @Component({
   selector: 'app-settings',
@@ -15,12 +17,13 @@ export class SettingsPage implements OnInit {
   private baseURL: string
 
   constructor(private router: Router,
-    public popoverController: PopoverController,
     public modalController: ModalController,
-    private telerupteurService: TelerupteurService) { }
+    private telerupteurService: TelerupteursService,
+    private config: Config, 
+    private preferences: PreferencesService) { }
 
   ngOnInit() {
-    this.baseURL = this.telerupteurService.getBaseUrl()
+    this.baseURL = this.preferences.getString(this.config.BASE_URL)
   }
 
   change() {
@@ -33,7 +36,7 @@ export class SettingsPage implements OnInit {
 
   save(url: HTMLIonInputElement): void {
     this.changed = false
-    this.telerupteurService.setUrl(url.value)
+    this.preferences.putString(this.config.BASE_URL, url.value)
   }
 
   push(telerupteur: Telerupteur) {
@@ -41,7 +44,7 @@ export class SettingsPage implements OnInit {
   }
 
   getTelerupteurs(): Telerupteur[] {
-    return this.telerupteurService.getTelerupteurs()
+    return this.telerupteurService.getLoadedTelerupteurs()
   }
 
   createNew() {

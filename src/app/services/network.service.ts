@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -8,26 +8,25 @@ export class NetworkService {
 
   constructor(private http: HttpClient) { }
 
-  async ping(url: string) {
-    try {
-      return await this.syncRequest(url, r => r.status === 200)
-    }
-    catch(err) {
-      return false
-    }
+  ping(url: string, next, error) {
+    console.log(`Ping url: ${url}`)
+    this.syncRequest(url, r => r.status == 200, next, error)
   }
 
-  private syncRequest(url: string, predicate: Function): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
-      this.http.get(url, { observe: 'response' })
-        .subscribe(response => {
-            if(predicate(response)) resolve(true)
-            else reject(false)
-          },
-          err => reject(false)
-        )
-    })
-
+  private syncRequest(url: string, predicate: Function, next, error) {
+    this.http.get(url, { observe: 'response' }).subscribe(
+      response => {
+        if(predicate(response)) {
+          console.log(`URL is resolved`)
+          next()
+        }
+        else error()
+      },
+      err => {
+        console.log("A error occured ")
+        error()
+      }
+    )
   }
 
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TelerupteurService } from '../services/telerupteur.service';
+import { InstallerService } from '../services/installer.service';
+import { TelerupteursService } from '../services/http/telerupteurs.service';
 import { Telerupteur } from '../model/telerupteur.model';
 
 @Component({
@@ -9,16 +10,25 @@ import { Telerupteur } from '../model/telerupteur.model';
 })
 export class HomePage implements OnInit {
 
-  constructor(private teleService: TelerupteurService) { }
+  private isRunnabled = false
 
-  ngOnInit() { }
+  constructor(private teleService: TelerupteursService,
+    private installer: InstallerService) { }
+
+  ngOnInit() { 
+    this.installer.onReady(() => this.loadTelerupteurs(), console.log)
+  }
 
   display() {
-    return this.teleService.count() > 0
+    return this.isRunnabled
+  }
+
+  loadTelerupteurs() {
+    this.teleService.getTelerupteurs(() => this.isRunnabled = true)
   }
 
   getTelerupteurs() {
-    return this.teleService.getTelerupteurs()
+    return this.teleService.getLoadedTelerupteurs()
   }
 
   enable(telerupteur: Telerupteur) {

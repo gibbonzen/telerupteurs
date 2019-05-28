@@ -23,10 +23,11 @@ export class TelerupteurService {
     }
 
   async setUrl(url: string) {
-    if(await this.networkService.ping(url)) {
+    let next = () => {
       this.storageService.setItem(TelerupteurService.BASE_URL, url)
       this.baseUrl = this.getBaseUrl()
     }
+    this.networkService.ping(url, next, console.log("Error"))
   }
 
   getBaseUrl() {

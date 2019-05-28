@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { CustomComponentsModule } from './custom-components/custom-components.module';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { Config, AppConfig } from './app.config';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { FormsModule } from '@angular/forms';
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: Config, useClass: AppConfig }
   ],
   bootstrap: [AppComponent]
 })
