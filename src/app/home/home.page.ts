@@ -17,6 +17,7 @@ export class HomePage implements OnInit {
 
   ngOnInit() { 
     this.installer.onReady(() => this.loadTelerupteurs(), console.log)
+    this.installer.onSocketReady(() => this.listenSocket())
   }
 
   display() {
@@ -38,4 +39,10 @@ export class HomePage implements OnInit {
   isOn(telerupteur: Telerupteur): boolean {
     return telerupteur.enabled
   }
+
+  listenSocket() {
+    this.teleService.listenSocket()
+  }
+
+
 }

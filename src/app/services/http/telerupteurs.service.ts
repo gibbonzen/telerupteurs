@@ -3,18 +3,20 @@ import { HTTPService } from './http.service';
 import { Telerupteur } from '../../model/telerupteur.model';
 import { PreferencesService } from '../preferences.service';
 import { Config } from '../../app.config';
+import { TelerupteursSocketService } from '../socket/telerupteurs-socket.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TelerupteursService {
 
-  private URL = () => this.preferences.getString(this.config.BASE_URL)
+  private URL = () => this.preferences.getString(this.config.BASE_URL) + this.preferences.getString(this.config.TELERUPTEURS_URL)
   private telerupteurs: Telerupteur[]
 
   constructor(public config: Config, 
     private preferences: PreferencesService,
-    private httpService: HTTPService) { 
+    private httpService: HTTPService,
+    private socketService: TelerupteursSocketService) { 
 
       this.preferences.subscribe(this.config.BASE_URL, () => this.getTelerupteurs(() => {}))
     }
@@ -64,5 +66,13 @@ export class TelerupteursService {
     removeTelerupteur(telerupteur: Telerupteur) {
       console.log(`Remove new telerupteur : ${telerupteur}`)
       this.httpService.delete(`${this.URL()}/${telerupteur.id}`).subscribe((data: Telerupteur[]) => this.telerupteurs = data)
+    }
+
+    listenSocket() {
+      this.socketService.onChange(data => {
+        let telerupteur = this.getTelerupteur({ id: data.id })
+        let index = this.telerupteurs.indexOf(telerupteur)
+        this.telerupteurs[index] = data
+      })
     }
 }

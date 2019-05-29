@@ -19,6 +19,11 @@
       <ion-input #url placeholder="Module WiFi (URL ou IP)" (change)="change()" [(ngModel)]="baseURL"></ion-input>
     </ion-item>
 
+    <ion-item>
+      <ion-label position="stacked">Adresse WebSocket</ion-label>
+      <ion-input #url placeholder="URL socket" (change)="change()" [(ngModel)]="socketURL"></ion-input>
+    </ion-item>
+
     <ion-button (click)="save(url)" expand="full" color="success" *ngIf="isChanged()">Enregistrer</ion-button>
   </ion-list>
 

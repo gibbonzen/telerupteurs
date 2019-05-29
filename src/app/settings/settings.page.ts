@@ -1,6 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PopoverController, NavController, ModalController } from '@ionic/angular';
 import { Telerupteur } from '../model/telerupteur.model';
 import { TelerupteursService } from '../services/http/telerupteurs.service';
 import { PreferencesService } from '../services/preferences.service';
@@ -15,15 +14,16 @@ export class SettingsPage implements OnInit {
 
   private changed: boolean = false
   private baseURL: string
+  private socketURL: string
 
   constructor(private router: Router,
-    public modalController: ModalController,
     private telerupteurService: TelerupteursService,
     private config: Config, 
     private preferences: PreferencesService) { }
 
   ngOnInit() {
     this.baseURL = this.preferences.getString(this.config.BASE_URL)
+    this.socketURL = this.preferences.getString(this.config.SOCKET_URL)
   }
 
   change() {

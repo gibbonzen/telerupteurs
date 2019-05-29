@@ -3,6 +3,7 @@ import { NetworkService } from './network.service';
 import { PreferencesService } from './preferences.service';
 import { Config } from '../app.config';
 import { AlertController } from '@ionic/angular';
+import { TelerupteursSocketService } from './socket/telerupteurs-socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,16 @@ export class InstallerService {
   constructor(private netService: NetworkService,
     private preferences: PreferencesService,
     private config: Config,
-    public alertController: AlertController) { 
+    public alertController: AlertController,
+    private socketService: TelerupteursSocketService) { 
   }
 
   private initApp(next: Function) {
+    // Set initial preferences value
+    this.preferences.putString(this.config.TELERUPTEURS_URL, '/telerupteurs')
+    this.preferences.subscribe(this.config.BASE_URL, () => 
+      this.preferences.putString(this.config.SOCKET_URL, this.preferences.getString(this.config.BASE_URL) + '/telerupteurs'))
+
     let baseUrl = this.preferences.getString(this.config.BASE_URL)
     if(baseUrl === null) {
       this.presentAlert(url => {
@@ -28,11 +35,21 @@ export class InstallerService {
     }
   }
 
+  connectSocket(next: Function) {
+    // Sockets
+    let socketURL = this.preferences.getString(this.config.SOCKET_URL)
+    this.socketService.connect(next)
+  }
+
   onReady(next: Function, error: Function) {
     this.initApp(() => {
       let url = this.preferences.getString(this.config.BASE_URL)
       this.netService.ping(url, next, error)
     })
+  }
+
+  onSocketReady(next: Function) {
+    this.connectSocket(next)
   }
 
   async presentAlert(next) {
