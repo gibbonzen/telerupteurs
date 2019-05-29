@@ -13,7 +13,7 @@ export class PreferencesService extends EventEmitter {
 
   putString(key: string, value: string) {
     this.storage.setItem<string>(key, value)
-    this.emit(key)
+    super.emit(key)
   }
 
   getString(key: string): string {
@@ -22,7 +22,7 @@ export class PreferencesService extends EventEmitter {
 
 
   subscribe(key: string, next: Function) {
-    this.addListener(key, () => next())
+    super.addListener(key, () => next())
   }
 
 }

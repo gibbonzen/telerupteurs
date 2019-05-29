@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Telerupteur } from '../model/telerupteur.model';
 import { AlertController, NavController } from '@ionic/angular';
-import { TelerupteurService } from '../services/telerupteur.service';
 import { ActivatedRoute } from '@angular/router';
+import { TelerupteursService } from '../services/http/telerupteurs.service';
 
 @Component({
   selector: 'app-telerupteurs',
@@ -13,20 +13,23 @@ export class TelerupteursPage implements OnInit {
 
   @Input() model: Telerupteur
   private changed: boolean = false
+  private newTele: boolean = false
 
   constructor(private route: ActivatedRoute,
     private navCtrl: NavController,
     public alertController: AlertController,
-    private teleService: TelerupteurService) { }
+    private teleService: TelerupteursService) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(data => {
-      this.model = this.teleService.getTelerupteur(data.id)
+      this.model = this.teleService.getTelerupteur({ id: data.id })
       if(this.model === undefined) this.model = this.createNew()
+      else this.newTele = false
     })
   }
 
   createNew() {
+    this.newTele = true
     return {
       id: this.teleService.count(),
       name: "Nouveau télérupteur",
@@ -44,7 +47,7 @@ export class TelerupteursPage implements OnInit {
   }
 
   save() {
-    this.teleService.updateTelerupteur(this.model)
+    this.newTele ? this.teleService.addTelerupteur(this.model) : this.teleService.updateTelerupteur(this.model)
     this.changed = false
   }
 
@@ -76,7 +79,7 @@ export class TelerupteursPage implements OnInit {
   }
 
   isNew(): boolean {
-    return this.teleService.exists(this.model)
+    return this.newTele
   }
 
 }

@@ -14,15 +14,15 @@ export class HTTPService {
   }
 
   post<T>(url: string, data: any): Observable<T> {
-    return this.post<T>(url, data)
+    return this.http.post<T>(url, data)
   }
 
   put<T>(url: string, data: any): Observable<T> {
-    return this.put<T>(url, data)
+    return this.http.put<T>(url, data)
   }
 
   delete<T>(url: string): Observable<T> {
-    return this.delete<T>(url)
+    return this.http.delete<T>(url)
   }
 
 }

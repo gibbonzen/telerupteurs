@@ -3,7 +3,6 @@ import { NetworkService } from './network.service';
 import { PreferencesService } from './preferences.service';
 import { Config } from '../app.config';
 import { AlertController } from '@ionic/angular';
-import { nextContext } from '@angular/core/src/render3';
 
 @Injectable({
   providedIn: 'root'
@@ -14,22 +13,26 @@ export class InstallerService {
     private preferences: PreferencesService,
     private config: Config,
     public alertController: AlertController) { 
-
-      this.initApp()
   }
 
-  private initApp() {
+  private initApp(next: Function) {
     let baseUrl = this.preferences.getString(this.config.BASE_URL)
     if(baseUrl === null) {
       this.presentAlert(url => {
         this.preferences.putString(this.config.BASE_URL, url)
+        next()
       })
+    }
+    else {
+      next()
     }
   }
 
   onReady(next: Function, error: Function) {
-    let url = this.preferences.getString(this.config.BASE_URL)
-    this.netService.ping(url, next, error)
+    this.initApp(() => {
+      let url = this.preferences.getString(this.config.BASE_URL)
+      this.netService.ping(url, next, error)
+    })
   }
 
   async presentAlert(next) {
@@ -40,7 +43,7 @@ export class InstallerService {
           name: 'url',
           type: 'text',
           placeholder: 'Adresse Ip ou URL',
-          value: 'http://localhost:8081/telerupteurs'
+          value: ''
         }
       ],
       buttons: [
